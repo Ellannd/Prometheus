@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% load static %}
+    <title> {% block title %} Prometheus, be free with passion {% endblock %}</title>
+<body>
+    {% block content %}
+    <main>
+
+
+        <!-- Feed -->
+
+  <div class="container-fluid  py-5 bg-dark">
+  <div class="row">
+    <div class="col-2">
+  <!-- Sidebar -->
+        <div class="d-flex flex-column h-100 d-inline-block  text-white bg-dark" style="width: 280px;">
+    <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+      <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
+      <span class="fs-4">Navigation</span>
+    </a>
+    <hr>
+    <ul class="nav nav-pills flex-column mb-auto" role="tablist">
+      <li class="nav-item" role="tab">
+        <a href="#" class="nav-link text-white active" aria-current="page">
+          <svg class="bi me-2" width="16" height="16"><use xlink:href="#home"/></svg>
+          Home
+        </a>
+      </li>
+      <li>
+        <a href="#" class="nav-link text-white">
+          <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"/></svg>
+          Popular
+        </a>
+      </li>
+      <li>
+        <a href="#" class="nav-link text-white">
+          <svg class="bi me-2" width="16" height="16"><use xlink:href="#table"/></svg>
+          Categories
+        </a>
+      </li>
+      <li>
+        <a href="#" class="nav-link text-white">
+          <svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"/></svg>
+          Forum
+        </a>
+      </li>
+      <li>
+        <a href="#" class="nav-link text-white">
+          <svg class="bi me-2" width="16" height="16"><use xlink:href="#people-circle"/></svg>
+          Premium
+        </a>
+      </li>
+    </ul>
+    <hr>
+    <div class="dropdown">
+       <!--Here goes the link to the user profile-->
+      <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+      <!--Edit this for the user image link provided-->
+        {% if request.user.is_authenticated %}
+        <img src={{user.provide_image}} alt="My Profile" width="32" height="32" class="rounded-circle me-2">
+        <strong>{{request.user.username}}</strong>
+      </a>
+      <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
+        <li><a class="dropdown-item" href="#">Go to my profile</a></li>
+        <li><a class="dropdown-item" href="#">Settings</a></li>
+        <li><a class="dropdown-item" href="#">Upload...</a></li>
+        <li><hr class="dropdown-divider"></li>
+        <li><a class="dropdown-item" href="#">Log out</a></li>
+      </ul>
+      {% else %}
+        <img src="https://i.imgur.com/WxNkK7J.png" alt="Login" width="32" height="32" class="rounded-circle me-2">
+        <strong>Anonymous</strong>
+      </a>
+      <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
+        <li><a class="dropdown-item" href="#">Login</a></li>
+        <li><hr class="dropdown-divider"></li>
+        <li><a class="dropdown-item" href="#">Register</a></li>
+      </ul>
+      {% endif %}
+
+
+
+    </div>
+  </div>
+      </div>
+        <!-- Sidebar -->
+
+  <div class="col">
+        <div class="container">
+
+          <div class="row">
+            {% for artwork in Artworks %}
+            <div class="col-md-4">
+              <div class="card mb-4 box-shadow border-0">
+                           <!-- Change the height if image must be equal on size -->
+                  <a href={{artwork.generate_artwork_url}}><img src= {{artwork.image_url}}  width="100%" height="100%" role="img"><title>{{artwork.name}}</title></img></a>
+                <div class="card-body bg-dark text-white">
+                  <!-- here goes artwork name, add tags-->
+                <p class="card-text">{{artwork.name}}</p>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div class="btn-group">
+                      <div class="text-center text-muted">
+                        <p class="mb-0">{{artwork.comments}}</p>
+                      <button type="button" id="comment-button" class="btn btn-sm btn-dark btn-outline-secondary border-0"><img class="rounded float-right d-inline-block align-top image-responsive" src="{% static "/icon/comment.png" %}" width="25" height="25" alt="Comment"></button>
+                    </div><div class="text-center text-muted">
+                      <p class="mb-0">{{artwork.count_likes}}</p>
+                      <button type="button" id="like-button" class="btn btn-sm btn-dark btn-outline-secondary border-0"><img class="rounded float-right d-inline-block align-top image-responsive" src="{% static "/icon/white_heart.png" %}" width="25" height="25" alt="Like"></button>
+                      </div>
+                    </div>
+                    <!-- here goes username with profile image thumbnail -->
+                    <small class="text-muted"><a class="link-opacity-10" href={{artwork.author.generate_profile_url}}><img src={{artwork.author.provide_image}} alt={{artwork.author.username}} width="40" height="40" class="rounded-circle me-2" style="max-width:100%;">
+                      <a>{{artwork.author.username}}</a></small>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+
+    </div>
+
+
+            <!-- Feed -->
+
+</main>
+    {% endblock %}
+</body>

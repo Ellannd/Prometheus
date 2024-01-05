@@ -1,0 +1,23 @@
+body{
+    background-color:#1C2833;
+    padding-top:55px;
+}
+.responsive{
+     width: 100%;
+     max-width: 400px;
+     height: auto;
+}.footer{
+     position: relative;
+}
+
+
+/*
+
+for adding fonts
+
+ @font-face {
+    font-family: 'HKGrotesk';
+    font-style: normal;
+    font-weight: bold;
+    src: local('HKGrotesk'), url('/static/fonts/hk-grotesk/HKGrotesk-SemiBoldLegacy.otf') format('opentype');
+}*/

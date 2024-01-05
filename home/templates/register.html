@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load static %}
+    <title> {% block title %} Welcome to Prometheus {% endblock %}</title>
+<body>
+
+</main>
+    {% block content %}
+
+{% load crispy_forms_tags %}
+
+<!--Register-->
+<div class="row justify-content-center">
+
+	<div class="bg-image d-flex justify-content-center align-items-center"
+		style="
+		background-image: url({% static "/bg/ruan-jia-background.jpg" %});
+
+				">
+
+
+	<div class="col-4 align-self-center mb-4 mt-5" style="
+    background-color: black;
+    opacity: 70%;
+    border-radius: 1rem!important;
+    ">
+
+<div class="container py-5 text-white justify-content-center">
+	<h1 class="text-center">Register</h1>
+
+	<form method="POST" name="register-name">
+		{% csrf_token %}
+		{{ register_form|crispy }}
+		<button class="btn btn-primary btn-dark" type="submit">Register</button>
+	</form>
+	<p class="text-center">If you already have an account, <a href="{% url "login" %}">login</a> instead.</p>
+</div>
+
+		</div>
+	</div>
+</div>
+    {% endblock %}
+</body>

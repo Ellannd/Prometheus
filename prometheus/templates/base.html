@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+    <meta charset="UTF-8">
+    <link rel="favicon" type="image/x-icon" href= {% static "/icon/favicon.png" %}>
+    <title>{% block title %}{% endblock %}</title>
+
+
+</head>
+<body>
+    {% block content %}{% endblock %}
+</body>
+</html>

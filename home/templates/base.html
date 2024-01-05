@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+
+    <title>{% block title %}{% endblock %}</title>
+
+    <link rel="icon" href= "{% static "/icon/favicon.png" %}">
+    <link rel=stylesheet type=text/css href={% static "/css/main.css" %}>
+
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+
+</head>
+<header>
+  <!-- Navbar -->
+  <nav class="navbar-expand-lg navbar-dark fixed-top" style="backgroud-color:#0C0C16">
+    <div class="container-fluid bg-dark">
+      <div class="collapse navbar-collapse" id="navbar">
+            <a class="navbar-brand" href="http://127.0.0.1:8000">
+                <img class="rounded float-right d-inline-block align-top image-responsive" src="{% static "/logo/prometheus_white.png" %}" width="410" height="70" alt="Prometheus">
+             </a>
+          <!-- Search bar -->
+                        <form class="d-flex input-group w-auto">
+                              <input
+                                    type="search"
+                                    class="form-control rounded"
+                                    placeholder="Search for nice artwork..."
+                                    aria-label="Search"
+                                    aria-describedby="search-addon"
+                                  />
+                                        <button type="button" class="btn btn-outline-light btn-lg row text-center">
+                                                 <img id="search-icon" src="{% static "/icon/search_icon.png" %}" weight="22px" height="22px">
+                                              </button>
+                        </form>
+
+          {% if request.user.is_authenticated %}
+          <!-- Logged in user navbar -->
+                            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                <li class="nav-item text-white">
+                    <a class="nav-link" href="#">
+                 <img id="notifications-icon" src="{% static "/icon/notifications_white.png" %}" weight="18px" height="18px">
+                        </a>
+                </li>
+          <li class="nav-item text-white">
+              <a class="nav-link" href="#">
+            <img id="message-icon" src="{% static "/icon/message_white.png" %}" weight="25px" height="25px">
+                  </a>
+          </li>
+          <li class="nav-item text-white">
+              <a class="nav-link" href={% url "upload" %}>
+              <img id="upload-icon" src="{% static "/icon/upload_white.png" %}" weight="25px" height="25px">
+                  </a>
+          </li>
+          <li class="nav-item dropdown" >
+            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" id="navbarDropdown" role="button" aria-expanded="false">
+                <img id="profile-icon" src="{% static "/icon/user_white.png" %}" weight="30px" height="30px">
+            </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <li>
+                        <a class="dropdown-item" href={% url "profile" %}>Profile</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href={% url "settings" %}>Settings</a>
+                    </li>
+                    <li><hr class="dropdown-divider" /></li>
+                    <li>
+                        <a class="dropdown-item" href={% url "logout" %}>Log out</a>
+                    </li>
+                </ul>
+          </li>
+        </ul>
+
+      </div>
+    </div>
+  </nav>
+
+
+          {% else %}
+              <!-- Not Logged user navbar -->
+     <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link text-white" aria-current="page" href="#">Groups</a>
+          </li>
+          <li class="nav-item text-white">
+            <a class="nav-link" href="#">Gallery</a>
+          </li>
+          <li class="nav-item text-white">
+            <a class="nav-link" href={% url "register" %}>Not registered?</a>
+          </li>
+                <li class="nav-item text-white h-100">
+                    <a class="btn btn-outline-light" href={% url "login" %} role="button">Login</a>
+          </li>
+        </ul>
+
+      </div>
+    </div>
+  </nav>
+
+            {% endif %}
+
+      </div>
+            </div>
+          </nav>
+
+</header>
+
+<body class="d-flex flex-column h-100">
+    {% block content %}{% endblock %}
+</body>
+
+  <!-- Footer -->
+  <footer
+          class="text-lg-start text-white bg-dark navbar-fixed-bottom"
+          style="background-color: #3e4551
+                bottom: 0
+                 height: 60px "
+          >
+    <!-- Grid container -->
+    <div class="container p-4 pb-0">
+
+
+      <hr class="mb-4" />
+
+      <!-- Section: CTA -->
+      <section class="">
+        <p class="d-flex justify-content-center align-items-center">
+          <span class="me-3">Prometheus</span>
+        </p>
+      </section>
+      <!-- Section: CTA -->
+
+      <hr class="mb-4" />
+
+      <!-- Section: Social media -->
+      <section class="mb-4 text-center">
+        <!-- Facebook -->
+        <a
+           class="btn btn-outline-light btn-floating m-1"
+           href="#!"
+           role="button"
+           ><i class="fab fa-facebook-f"></i
+          ></a>
+
+        <!-- Twitter -->
+        <a
+           class="btn btn-outline-light btn-floating m-1"
+           href="#!"
+           role="button"
+           ><i class="fab fa-twitter"></i
+          ></a>
+
+        <!-- Google -->
+        <a
+           class="btn btn-outline-light btn-floating m-1"
+           href="#!"
+           role="button"
+           ><i class="fab fa-google"></i
+          ></a>
+
+        <!-- Instagram -->
+        <a
+           class="btn btn-outline-light btn-floating m-1"
+           href="#!"
+           role="button"
+           ><i class="fab fa-instagram"></i
+          ></a>
+
+        <!-- Linkedin -->
+        <a
+           class="btn btn-outline-light btn-floating m-1"
+           href="#!"
+           role="button"
+           ><i class="fab fa-linkedin-in"></i
+          ></a>
+
+        <!-- Github -->
+        <a
+           class="btn btn-outline-light btn-floating m-1"
+           href="#!"
+           role="button"
+           ><i class="fab fa-github"></i
+          ></a>
+      </section>
+      <!-- Section: Social media -->
+    </div>
+    <!-- Grid container -->
+
+    <!-- Copyright -->
+    <div
+         class="text-center p-3"
+         style="background-color: rgba(0, 0, 0, 0.2)"
+         >
+      © 2023 Copyright:
+      <a class="text-white" href="http://127.0.0.1:8000"
+         >Prometheus.com</a
+        >
+    </div>
+    <!-- Copyright -->
+  </footer>
+  <!-- Footer -->
+
+</html>

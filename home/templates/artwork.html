@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+<head>
+    <title>{% block title %}{{artwork.name}} - {{artwork.author}}{% endblock %}</title>
+</head>
+<body>
+{% block content %}
+<div class="container-fluid">
+    <div class="row row-cols-2">
+        <div class="col-8">
+            <div class="card border-0 shadow mb-4">
+                <img src={{artwork.image_url}} alt={{artwork.name}}>
+                <div class="card-body p-1-9 p-xl-5 bg-dark text-white">
+                    <div class="mb-0">
+                        <h3 class="h4 mb-0">{{artwork.name}}</h3>
+                        <span class="text-muted">Publication date: {{artwork.pub_date}}</span>
+                    </div>
+
+                         <div class="d-flex justify-content-between align-items-center">
+                                <div class="btn-group">
+                                          <div class="text-center text-muted">
+                                                    <p class="mb-0">{{comments_count}}</p>
+                                                      <button type="button" id="comment-button" class="btn btn-sm btn-dark btn-outline-secondary border-0"><img class="rounded float-right d-inline-block align-top image-responsive" src="/static/icon/comment.png" width="25" height="25" alt="Comment"></button>
+                                                    </div><div class="text-center text-muted">
+                                                      <p class="mb-0">{{likes_count}}</p>
+                                                      <button type="button" id="like-button" class="btn btn-sm btn-dark btn-outline-secondary border-0"><img class="rounded float-right d-inline-block align-top image-responsive" src="/static/icon/white_heart.png" width="25" height="25" alt="Like"></button>
+                                                      </div>
+                                                    </div>
+                                                <!-- here goes username with profile image thumbnail -->
+                                        <small class="text-muted"><a class="link-opacity-10" href={{artwork.author.generate_profile_url}}><img src={{artwork.author.provide_image}} alt={{artwork.author}}" width="60" height="60" class="rounded-circle m-4" style="max-width:100%;">
+                                 <strong>{{artwork.author}}</strong></a></small>
+                         </div>
+                    <div class="button-group">
+                        <p class="text-muted mb-1">Share</p>
+                        <button class="btn btn-sm btn-dark btn-outline-secondary" type="button"><a href="#!"><i class="fab fa-facebook-f"></i></a></button>
+                        <button class="btn btn-sm btn-dark btn-outline-secondary" type="button"><a href="#!"><i class="fab fa-twitter"></i></a></button>
+                        <button class="btn btn-sm btn-dark btn-outline-secondary" type="button"><a href="#!"><i class="fab fa-youtube"></i></a></button>
+                        <button class="btn btn-sm btn-dark btn-outline-secondary" type="button"><a href="#!""><i class="fab fa-linkedin-in"></i></a></button>
+                    </div>
+
+                </div>
+            </div>
+
+            <div>
+            <div class="bg-dark shadow text-muted mb-4">
+                <div class="border-0 mb-2">
+                    <div class="text-start mb-4 py-2">
+                        <h2 class="text-center h3 mb-2">Description</h2>
+                    </div>
+                    <p style="
+                     padding-left: 15px;
+                     ">{{artwork.description|linebreaksbr}}</p>
+
+                </div>
+                <div class="mb-1 border-0">
+                </div>                </div>
+                 <div class="bg-dark shadow text-muted mb-4">
+  <div class="fluid-container my-1 py-1">
+    <div class="row d-flex justify-content-center">
+      <div>
+        <div class="card bg-dark">
+          <div class="card-body p-4">
+            <h4 class="text-center mb-4 pb-2">Comments</h4>
+            <div class="row">
+                  {% for comment in comments %}
+              </div>
+                <div class="d-flex flex-start mt-3">
+                    <a class="me-3" href={{comment.author.generate_profile_url}}>
+                  <img class="rounded-circle shadow-1-strong me-3"
+                    src={{comment.author.provide_image}} alt={{comment.author}} width="65"
+                    height="65" /> </a>
+                  <div class="flex-grow-1 flex-shrink-1">
+                    <div>
+                      <div class="d-flex justify-content-between align-items-center">
+                        <p class="mb-1">
+                            {{comment.author}}<span class="small">- {{comment.time_elapsed}}</span>
+                        </p>
+                        <a href="#!"><i class="fas fa-reply fa-xs"></i><span class="small"> reply</span></a>
+                      </div>
+                      <p class="small mb-0">
+                          {{comment.comment|linebreaks}}
+                      </p>
+                    </div>
+                      {% for reply in replies %}
+                      {% if reply.replying == comment %}
+
+                    <div class="d-flex flex-start mt-4">
+                      <a class="me-3" href={{reply.author.generate_profile_url}}>
+                        <img class="rounded-circle shadow-1-strong"
+                          src={{reply.author.provide_image}} alt={{reply.author}}
+                          width="65" height="65" />
+                      </a>
+                      <div class="flex-grow-1 flex-shrink-1">
+                        <div>
+                          <div class="d-flex justify-content-between align-items-center">
+                            <p class="mb-1">
+                              {{reply.author}} <span class="small">- {{reply.time_elapsed}}</span>
+                            </p>
+                          </div>
+                          <p class="small mb-0">
+                            {{reply.comment|linebreaks}}
+                          </p>
+                        </div>
+                      </div>
+                          </div>
+                    </div>
+                      {% endif %}
+                      {% endfor %}
+                      {% endfor %}
+
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="col-4 py-5 mb-5">
+                        <div class="text-center text-white mb-3">
+                            <h3>More from {{artwork.author}}</h3>
+                        </div>
+                        <div class="body widget">
+                            <div class="row row-cols-3">
+                                {% for a in morefrom %}
+                                <div class="col-md-auto mb-3 shadow"><a href={{a.generate_artwork_url_from_view}}><img class="img-fluid" src={{a.image_url}} alt={{a.name}}></a></div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+             <div>
+
+                            <div class="">
+
+                                  <div class="text-center text-white mb-3">
+                                        <h2>Related artworks</h2>
+                                     </div>
+
+                                <div style="text-align: center;">
+                                            <img class="mb-4" src="https://www.bootdey.com/image/280x280/87CEFA/000000" alt="Awesome Image">
+                                            <img src="https://www.bootdey.com/image/280x280/87CEFA/000000" alt="Awesome Image">
+                                        </div>
+                                    </div>
+
+                                    </div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+
+
+        </div>
+    </div>
+</div>
+</div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+
+{% endblock %}
+</body>
+</html>
