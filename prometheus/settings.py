@@ -139,3 +139,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
 
 AUTH_USER_MODEL = 'home.User'
+
+
+AUTHENTICATION_BACKENDS = [
+    'home.backend.UserBackend',
+    'home.backend.EmailBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]

@@ -1,19 +1,19 @@
 {% extends "base.html" %}
 {% load static %}
-    <title> {% block title %} Welcome to Prometheus {% endblock %}</title>
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
 <body>
 
-</main>
-    {% block content %}
-
+{% block content %}
 {% load crispy_forms_tags %}
 
-<!--Register-->
 <div class="row justify-content-center">
 
 	<div class="bg-image d-flex justify-content-center align-items-center"
 		style="
-		background-image: url({% static "/bg/2.jpg" %});
+		background-image: url({% static "/bg/wei-feng2.jpg" %});
 		background-size: cover;
 		padding-bottom: 5%;
 
@@ -27,12 +27,12 @@
     ">
 
 <div class="container py-5 text-white justify-content-center">
-	<h1 class="text-center">Submit your artwork</h1>
+	<h1 class="text-center">Edit your Profile</h1>
 
 	<form method="POST" name="upload-name" enctype="multipart/form-data">
 		{% csrf_token %}
-		{{ upload_artwork|crispy }}
-		<button class="btn btn-primary btn-dark" type="submit">Publish</button>
+		{{ edit_profile|crispy }}
+		<button class="btn btn-primary btn-dark" type="submit">Save</button>
 		{% if form.errors %}
 			<ol>
 			{% for error in form.errors %}
@@ -41,11 +41,12 @@
 			</ol>
 		{% endif %}
 	</form>
-	<p class="text-center">Publishing your artwork means that you accept our, <a href="{% url "login" %}">Terms and conditions</a></p>
 </div>
 
 		</div>
 	</div>
 </div>
-    {% endblock %}
+{% endblock %}
+
 </body>
+</html>

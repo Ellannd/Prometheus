@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import NewUserForm, artworkForm, LoginForm
+from .forms import NewUserForm, artworkForm, edit_Profile
 from .models import *
 from django.contrib import messages
 from django.contrib.auth import login, authenticate, logout, get_user_model
@@ -26,13 +26,44 @@ def home(request):
 
 
 
-@login_required()
+@login_required(login_url="/login/")
 def profile(request):
+    user = get_object_or_404(User, username=request.user.username)
+    arts = Artwork.objects.filter(author=user).count()
 
-    user=request.user
-    context={"User":user}
+    try:
+        recents = Artwork.objects.filter(author=user)[8]
+    except:
+        recents = Artwork.objects.filter(author=user)
+
+    following = FollowingFollower.objects.filter(user_follow=user).count()
+    followers = FollowingFollower.objects.filter(user_followed=user).count()
+
+    context = {
+        "profile": user,
+        "arts": arts,
+        "followers": followers,
+        "following": following,
+        "recent_artworks": recents
+    }
     return render(request, "profile.html", context)
 
+def editProfile(request):
+    if request.method == "POST":
+        user = User.objects.get(username=request.user.username)
+        form = edit_Profile(request.POST, request.FILES)
+        if form.is_valid():
+           # artwork = form.save(user=request.user, date=datetime.datetime.now(), artwork=image)
+            #artwork = form.save(author=user)
+            profile= form.save()
+            messages.success(request, "Your profile info has been saved sucessfully.")
+            return redirect("profile")
+        else:
+            messages.error(request, "There was an error when submitting your info." + str(form.cleaned_data) + "with the following errors:" + str(form.errors) + "Request.FILES:" + str(request.FILES))
+
+    form = edit_Profile()
+
+    return render(request, "editProfile.html", context={"edit_profile":form})
 
 
 def otherUser(request, username):
@@ -77,7 +108,7 @@ def artwork(request, pk):
 
 
 
-@login_required()
+@login_required(login_url="/login/")
 def myArtwork(request):
     return render(request, "myArtwork.html", context=None)
 
@@ -86,13 +117,15 @@ def myArtwork(request):
 @login_required(login_url="/login/")
 def uploadArtwork(request):
     if request.method == "POST":
-        form = artworkForm(request.POST, request.FILES, initial={"author": request.user})
+        user = User.objects.get(username=request.user.username)
+        form = artworkForm(request.POST, request.FILES, initial={"author": user})
         if form.is_valid():
-            artwork = form.save(user=request.user, date=datetime.datetime.now())
+           # artwork = form.save(user=request.user, date=datetime.datetime.now(), artwork=image)
+            artwork = form.save(date=datetime.datetime.now(),author=user)
             messages.success(request, "Your artwork has been submitted sucessfully")
             return redirect("home")
         else:
-            messages.error(request, "There was an error when submitting your artwork." + str(form.cleaned_data) + "with the following errors:" + str(form.errors))
+            messages.error(request, "There was an error when submitting your artwork." + str(form.cleaned_data) + "with the following errors:" + str(form.errors) + "Request.FILES:" + str(request.FILES))
 
     form = artworkForm()
 
@@ -105,7 +138,7 @@ def register(request):
         form = NewUserForm(request.POST)
         if form.is_valid():
             user = form.save()
-            login(request, user)
+            login(request, user, backend='home.backend.UserBackend')
             messages.success(request, "Registration successful.")
             return redirect("home")
         else:
@@ -123,14 +156,14 @@ def login_user(request):
 			password = form.cleaned_data.get('password')
 			user = authenticate(username=username, password=password)
 			if user is not None:
-				login(request, user)
+				login(request, user, backend='home.backend.UserBackend')
 				messages.info(request, f"You are now logged in as {username}.")
 				return redirect("home")
 			else:
-				messages.error(request,"Invalid username or password."+ str(form.cleaned_data))
+				messages.error(request,"User is none. Form: "+ str(form.cleaned_data))
 		else:
-			messages.error(request,"Invalid username or password."+ str(form.cleaned_data))
-	form = LoginForm()
+			messages.error(request,"Invalid username or password: "+ str(form.cleaned_data))
+	form = AuthenticationForm()
 	return render(request=request, template_name="login.html", context={"login_form":form})
 
 def logout_request(request):

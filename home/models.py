@@ -11,18 +11,24 @@ User = settings.AUTH_USER_MODEL
 default_user_avatar="https://i.imgur.com/WxNkK7J.png"
 
 class User(AbstractUser):
-    userImgLink=True
+    username = models.CharField(max_length=14, null=True, blank=False, unique=True)
     birth=models.DateTimeField(null=True, blank=True)
     profile_Picture_Link=models.CharField(max_length=120, blank=True, null=True)
     #add default in all models
     profile_Picture=models.ImageField(upload_to="profilepics",null=True, blank=True, default="default_user.png")
 
     occupation=models.CharField(max_length=200, blank=True, null=False)
-    backgroundImgLink=True
+    bio= models.TextField(max_length=600, blank=True)
     background_Picture_Link=models.CharField(max_length=120, blank=True, null=True)
     background_Picture=models.ImageField(upload_to="avatarbg",null=True, blank=True)
 
     followers=models.ManyToManyField(User, related_name="users_following", blank=True)
+
+    def __str__(self):
+        if self.username is None:
+            return "error_delete_this_user"
+        else:
+            return self.username
 
     @property
     def generate_profile_url(self):
@@ -63,6 +69,8 @@ class userInfo(models.Model):
     background_Picture_Link=models.CharField(max_length=120, blank=True, null=True)
     background_Picture=models.ImageField(upload_to="avatarbg",null=True, blank=True)
 
+    def __str__(self):
+        return str(self.user)
 
     @property
     def generate_profile_url(self):
@@ -107,7 +115,7 @@ class Artwork(models.Model):
     author= models.ForeignKey(User, on_delete=models.CASCADE)
     artwork=models.ImageField(upload_to="artworks",null=True, blank=False)
     name= models.CharField(max_length=30)
-    pub_date= models.DateTimeField()
+    pub_date= models.DateTimeField(null=True)
     description= models.TextField(max_length=200000, null=True, blank=True)
     comments=models.IntegerField(default=0)
     tags= models.TextField(max_length=600, null=True, blank=True)
