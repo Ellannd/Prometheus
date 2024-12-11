@@ -1,8 +1,13 @@
 {% extends "base.html" %}
+
 <head>
     <title>{% block title %}{{artwork.name}} - {{artwork.author}}{% endblock %}</title>
+    {% load static %}
+
 </head>
 <body>
+
+
 {% block content %}
 <div class="container-fluid">
     <div class="row row-cols-2">
@@ -21,8 +26,8 @@
                                                     <p class="mb-0">{{comments_count}}</p>
                                                       <button type="button" id="comment-button" class="btn btn-sm btn-dark btn-outline-secondary border-0"><img class="rounded float-right d-inline-block align-top image-responsive" src="/static/icon/comment.png" width="25" height="25" alt="Comment"></button>
                                                     </div><div class="text-center text-muted">
-                                                      <p class="mb-0">{{likes_count}}</p>
-                                                      <button type="button" id="like-button" class="btn btn-sm btn-dark btn-outline-secondary border-0"><img class="rounded float-right d-inline-block align-top image-responsive" src="/static/icon/white_heart.png" width="25" height="25" alt="Like"></button>
+                                                      <p id="like-count" class="mb-0">{{likes_count}}</p>
+                                                      <button type="button" id="like-button" class="btn btn-sm btn-dark btn-outline-secondary border-0" data-artwork-id={{artwork.pk}}><img class="rounded float-right d-inline-block align-top image-responsive" src="/static/icon/white_heart.png" width="25" height="25" alt="Like"></button>
                                                       </div>
                                                     </div>
                                                 <!-- here goes username with profile image thumbnail -->
@@ -61,9 +66,10 @@
           <div class="card-body p-4">
             <h4 class="text-center mb-4 pb-2">Comments</h4>
             <div class="row">
-                  {% for comment in comments %}
+
               </div>
-                <div class="d-flex flex-start mt-3">
+              {% for comment in comments %}
+                <div class="d-flex flex-start mt-3 w-100">
                     <a class="me-3" href={{comment.author.generate_profile_url}}>
                   <img class="rounded-circle shadow-1-strong me-3"
                     src={{comment.author.provide_image}} alt={{comment.author}} width="65"
@@ -72,40 +78,54 @@
                     <div>
                       <div class="d-flex justify-content-between align-items-center">
                         <p class="mb-1">
-                            {{comment.author}}<span class="small">- {{comment.time_elapsed}}</span>
+                            {{comment.author}}<span class="small">- {{comment.pub_date}}</span>
                         </p>
-                        <a href="#!"><i class="fas fa-reply fa-xs"></i><span class="small"> reply</span></a>
+                          <a href="#reply-form-{{ comment.id }}" data-toggle="collapse"><i class="fas fa-reply fa-xs"></i><span class="small"> reply </span></a>
                       </div>
                       <p class="small mb-0">
                           {{comment.comment|linebreaks}}
                       </p>
                     </div>
-                      {% for reply in replies %}
-                      {% if reply.replying == comment %}
 
-                    <div class="d-flex flex-start mt-4">
-                      <a class="me-3" href={{reply.author.generate_profile_url}}>
-                        <img class="rounded-circle shadow-1-strong"
-                          src={{reply.author.provide_image}} alt={{reply.author}}
-                          width="65" height="65" />
-                      </a>
-                      <div class="flex-grow-1 flex-shrink-1">
-                        <div>
-                          <div class="d-flex justify-content-between align-items-center">
-                            <p class="mb-1">
-                              {{reply.author}} <span class="small">- {{reply.time_elapsed}}</span>
-                            </p>
+                      <!-- Mostrar las respuestas -->
+                      {% for reply in comment.replies.all %}
+                      <div class="d-flex flex-start mt-4 ms-5 w-100">
+                          <a class="me-3" href="{{ reply.author.generate_profile_url }}">
+                              <img class="rounded-circle shadow-1-strong" src="{{ reply.get_profile_image }}" alt="{{ reply.author }}" width="65" height="65" /> </a>
+                          <div class="flex-grow-1 flex-shrink-1">
+                              <div>
+                                  <div class="d-flex justify-content-between align-items-center">
+                                      <p class="mb-1"> {{ reply.author }}
+                                          <span class="small">- {{ reply.pub_date }}</span>
+                                      </p>
+                                  </div>
+                                  <p class="small mb-0"> {{ reply.content|linebreaks }} </p>
+                              </div>
                           </div>
-                          <p class="small mb-0">
-                            {{reply.comment|linebreaks}}
-                          </p>
-                        </div>
                       </div>
-                          </div>
+                      {% endfor %}
+                      <!-- Formulario para responder a un comentario -->
+                      <div id="reply-form-{{ comment.id }}" class="collapse mt-3">
+                          <form method="post"> {% csrf_token %}
+                              <input type="hidden" name="parent_id" value={{ comment.id }}>
+                              {{ form.as_p }}
+                              <button type="submit" class="btn btn-primary mt-2">Post Reply</button>
+                          </form>
+                      </div>
+                  </div>
+                </div>
+                      {% endfor %}
+                    <!-- Formulario para dejar un comentario -->
+                    <div class="row mt-4" id="comment-form-container">
+                        <div class="col-lg-12">
+                            <h5>Leave a Comment</h5>
+                            <form method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                {{ form.as_p }}
+                                <button type="submit" class="btn mt-2 btn-outline-light">Post Comment</button>
+                            </form>
+                        </div>
                     </div>
-                      {% endif %}
-                      {% endfor %}
-                      {% endfor %}
 
 
                   </div>
@@ -116,10 +136,10 @@
         </div>
       </div>
     </div>
-  </div>
 
 
-  <div class="col-4 py-5 mb-5">
+
+  <div class="col-md-4 py-5 mb-5">
                         <div class="text-center text-white mb-3">
                             <h3>More from {{artwork.author}}</h3>
                         </div>
@@ -147,6 +167,7 @@
 
                                     </div>
                             </div>
+        </div>
                         </div>
                     </div>
                     </div>
@@ -163,7 +184,8 @@
 
         </div>
 
-
+    <script src="{% static 'js/like.js' %}"></script>
 {% endblock %}
+
 </body>
 </html>

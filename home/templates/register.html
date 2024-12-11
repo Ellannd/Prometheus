@@ -27,7 +27,7 @@
 <div class="container py-5 text-white justify-content-center">
 	<h1 class="text-center">Register</h1>
 
-	<form method="POST" name="register-name">
+	<form method="POST" name="register-name" enctype="multipart/form-data">
 		{% csrf_token %}
 		{{ register_form|crispy }}
 		<button class="btn btn-primary btn-dark" type="submit">Register</button>

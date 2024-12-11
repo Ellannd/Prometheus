@@ -1,8 +1,11 @@
+from tkinter import Image
+
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
 from .models import Artwork
+from .models import Comment
 
 YEARS=[]
 if YEARS.count(1951)<1:
@@ -23,7 +26,7 @@ class NewUserForm(UserCreationForm):
 
 	class Meta:
 		model = User
-		fields = ("username", "email", "password1", "password2", "birth", "occupation")
+		fields = ("username", "email", "password1", "password2", "birth", "occupation", "profile_Picture")
 
 	def save(self, commit=True):
 		user = super(NewUserForm, self).save(commit=False)
@@ -32,10 +35,25 @@ class NewUserForm(UserCreationForm):
 		user.email = self.cleaned_data['email']
 		user.birth = self.cleaned_data["birth"]
 		user.occupation = self.cleaned_data["occupation"]
-
+		profile_Picture = self.cleaned_data["profile_Picture"]
+		if profile_Picture:
+			from PIL import image
+			image = Image.open(profile_Picture)
+			cropped_image = self.crop_center(image)
+			cropped_image.save(profile_Picture.path)
 		if commit:
 			user.save()
 		return user
+
+	def crop_center(self, image):
+		width, height = image.size
+		new_width= min (width,height)
+		new_height = new_width
+		left = (width - new_width) / 2
+		top = (height - new_height) / 2
+		right = (width + new_width) / 2
+		bottom = (height + new_height) / 2
+		return image.crop((left, top, right, bottom))
 
 class LoginForm(forms.Form):
 	username= forms.CharField(label="Username")
@@ -43,9 +61,11 @@ class LoginForm(forms.Form):
 	class Meta:
 		model = User
 
-class edit_Profile(forms.Form):
-	pass
-
+class edit_Profile(forms.ModelForm):
+	birth = forms.DateTimeField(widget=forms.SelectDateWidget(years=YEARS))
+	class Meta:
+		model = User
+		fields = ("birth", "occupation", "bio", "profile_Picture_Link","background_Picture_Link", "profile_Picture")
 
 class artworkForm(forms.ModelForm):
 	#artwork= forms.ImageField()
@@ -75,3 +95,9 @@ class artworkForm(forms.ModelForm):
 
 		if commit:
 			artwork.save()"""
+
+class CommentForm(forms.ModelForm):
+	class Meta:
+		model = Comment
+		fields = ['comment']
+		widgets = {'comment': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Leave a comment...'}), }

@@ -36,24 +36,17 @@ class User(AbstractUser):
 
     @property
     def provide_image(self):
-        try:
-            if self.profile_Picture and hasattr(self.profile_Picture, 'url'):
-                return self.profile_Picture.url
-        except:
-            try:
-                if not self.profile_Picture and not self.profile_Picture_Link.blank:
-                    return self.profile_Picture_Link
-            except:
-                if not hasattr(self.profile_Picture, 'url') and self.profile_Picture_Link.blank :
-                    return default_user_avatar
-                else:
-                    return None
+        if self.profile_Picture:
+            return self.profile_Picture.url
+        if self.profile_Picture_Link:
+            return self.profile_Picture_Link
+        else:
+            return default_user_avatar
+
     @property
     def count_followers(self):
             return self.followers.count()
 
-    def __str__(self):
-        return self.username
 
 class userInfo(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -146,7 +139,9 @@ class Artwork(models.Model):
     @property
     def count_likes(self):
             return self.likes.count()
-
+    @property
+    def count_comments(self):
+        return self.comments
     def __str__(self):
         return self.name
 
@@ -172,6 +167,8 @@ class Comment(models.Model):
     comment=models.TextField(max_length=1000)
     pub_date = models.DateTimeField()
     likes = models.ManyToManyField(User, related_name="users_liked_comment", blank=True)
+    is_reply = models.BooleanField(default=False)
+    parent = models.ForeignKey('self', null=True, blank=True, related_name='replies', on_delete=models.CASCADE)
 
     @property
     def has_reply(self):
